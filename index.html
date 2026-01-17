@@ -3,69 +3,68 @@
 <head>
   <meta charset="UTF-8" />
   <title>Pastel Ghost Forest</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <style>
     body {
       margin: 0;
-      background: #f6f1ff;
       overflow: hidden;
-      font-family: cursive;
+      background: #e8fff4;
+      font-family: "Comic Sans MS", cursive;
     }
-    canvas {
-      display: block;
-    }
-    .note {
+
+    #info {
       position: fixed;
-      top: 10px;
-      left: 10px;
+      top: 12px;
+      left: 12px;
       background: rgba(255,255,255,0.7);
-      padding: 8px 12px;
-      border-radius: 12px;
-      font-size: 12px;
+      padding: 8px 14px;
+      border-radius: 20px;
+      font-size: 14px;
+    }
+
+    #ghost {
+      width: 40px;
+      height: 40px;
+      background: white;
+      border-radius: 50%;
+      position: absolute;
+      left: 50%;
+      top: 60%;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 15px rgba(255,255,255,0.9);
+      transition: left 0.2s linear, top 0.2s linear;
     }
   </style>
 </head>
+
 <body>
-  <div class="note">👻 Pastel Ghost Forest — Tap and drag to move the ghost </div>
-  <canvas id="game"></canvas>
+
+  <div id="info">👻 Tap or drag anywhere to move the ghost</div>
+  <div id="ghost"></div>
 
   <script>
-    const canvas = document.getElementById('game');
-    const ctx = canvas.getContext('2d');
+    const ghost = document.getElementById("ghost");
 
-    function resize() {
-      canvas.width = innerWidth;
-      canvas.height = innerHeight;
-    }
-    resize();
-    window.onresize = resize;
-
-    let ghost = { x: innerWidth/2, y: innerHeight/2 };
-
-    const keys = {};
-    onkeydown = e => keys[e.key] = true;
-    onkeyup = e => keys[e.key] = false;
-
-    function drawGhost() {
-      ctx.beginPath();
-      ctx.fillStyle = 'white';
-      ctx.arc(ghost.x, ghost.y, 18, 0, Math.PI*2);
-      ctx.fill();
+    function moveGhost(x, y) {
+      ghost.style.left = x + "px";
+      ghost.style.top = y + "px";
     }
 
-    function loop() {
-      ctx.fillStyle = '#e6fff4';
-      ctx.fillRect(0,0,canvas.width,canvas.height);
+    document.addEventListener("touchstart", (e) => {
+      const touch = e.touches[0];
+      moveGhost(touch.clientX, touch.clientY);
+    });
 
-      if(keys.ArrowUp) ghost.y -= 2;
-      if(keys.ArrowDown) ghost.y += 2;
-      if(keys.ArrowLeft) ghost.x -= 2;
-      if(keys.ArrowRight) ghost.x += 2;
+    document.addEventListener("touchmove", (e) => {
+      const touch = e.touches[0];
+      moveGhost(touch.clientX, touch.clientY);
+    });
 
-      drawGhost();
-      requestAnimationFrame(loop);
-    }
-    loop();
+    document.addEventListener("click", (e) => {
+      moveGhost(e.clientX, e.clientY);
+    });
   </script>
+
 </body>
 </html>
