@@ -1,70 +1,142 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <title>Pastel Ghost Forest</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<title>Pastel Ghost Forest</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <style>
-    body {
-      margin: 0;
-      overflow: hidden;
-      background: #e8fff4;
-      font-family: "Comic Sans MS", cursive;
-    }
+<style>
+body {
+  margin: 0;
+  overflow: hidden;
+  background: linear-gradient(#eafff4, #dff6ff);
+  font-family: "Comic Sans MS", cursive;
+}
 
-    #info {
-      position: fixed;
-      top: 12px;
-      left: 12px;
-      background: rgba(255,255,255,0.7);
-      padding: 8px 14px;
-      border-radius: 20px;
-      font-size: 14px;
-    }
+/* UI */
+#ui {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  background: rgba(255,255,255,0.7);
+  padding: 10px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+}
 
-    #ghost {
-      width: 40px;
-      height: 40px;
-      background: white;
-      border-radius: 50%;
-      position: absolute;
-      left: 50%;
-      top: 60%;
-      transform: translate(-50%, -50%);
-      box-shadow: 0 0 15px rgba(255,255,255,0.9);
-      transition: left 0.2s linear, top 0.2s linear;
-    }
-  </style>
+#score {
+  margin-top: 6px;
+}
+
+/* Ghost */
+#ghost {
+  width: 40px;
+  height: 40px;
+  background: white;
+  border-radius: 50%;
+  position: absolute;
+  left: 50%;
+  top: 60%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 15px rgba(255,255,255,0.9);
+  animation: float 3s ease-in-out infinite;
+  z-index: 10;
+}
+
+/* Mushroom */
+.mushroom {
+  width: 30px;
+  height: 30px;
+  background: #ffb3c6;
+  border-radius: 50%;
+  position: absolute;
+  animation: bob 4s ease-in-out infinite;
+}
+
+/* Snail obstacle */
+#snail {
+  width: 28px;
+  height: 20px;
+  background: #cdb4db;
+  border-radius: 50%;
+  position: absolute;
+  bottom: 40px;
+  left: 20px;
+}
+
+/* Animations */
+@keyframes float {
+  0%,100% { transform: translate(-50%, -50%) translateY(0); }
+  50% { transform: translate(-50%, -50%) translateY(-8px); }
+}
+
+@keyframes bob {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+</style>
 </head>
 
 <body>
 
-  <div id="info">👻 Tap or drag anywhere to move the ghost</div>
-  <div id="ghost"></div>
+<div id="ui">
+  👻 Tap or drag to move  
+  <div id="score">⭐ Score: 0</div>
+</div>
 
-  <script>
-    const ghost = document.getElementById("ghost");
+<div id="ghost"></div>
+<div id="snail"></div>
 
-    function moveGhost(x, y) {
-      ghost.style.left = x + "px";
-      ghost.style.top = y + "px";
-    }
+<!-- Mushrooms -->
+<div class="mushroom" style="left:20%; top:70%"></div>
+<div class="mushroom" style="left:60%; top:75%"></div>
+<div class="mushroom" style="left:80%; top:65%"></div>
 
-    document.addEventListener("touchstart", (e) => {
-      const touch = e.touches[0];
-      moveGhost(touch.clientX, touch.clientY);
-    });
+<audio id="music" loop>
+  <source src="https://cdn.pixabay.com/audio/2022/10/16/audio_9b7f87c56c.mp3">
+</audio>
 
-    document.addEventListener("touchmove", (e) => {
-      const touch = e.touches[0];
-      moveGhost(touch.clientX, touch.clientY);
-    });
+<script>
+const ghost = document.getElementById("ghost");
+const snail = document.getElementById("snail");
+const scoreText = document.getElementById("score");
+const music = document.getElementById("music");
 
-    document.addEventListener("click", (e) => {
-      moveGhost(e.clientX, e.clientY);
-    });
-  </script>
+let score = 0;
+music.volume = 0.3;
+music.play();
+
+function moveGhost(x, y) {
+  ghost.style.left = x + "px";
+  ghost.style.top = y + "px";
+
+  const g = ghost.getBoundingClientRect();
+  const s = snail.getBoundingClientRect();
+
+  if (
+    g.left < s.right &&
+    g.right > s.left &&
+    g.top < s.bottom &&
+    g.bottom > s.top
+  ) {
+    score++;
+    scoreText.innerText = "⭐ Score: " + score;
+    snail.style.left = Math.random() * window.innerWidth + "px";
+  }
+}
+
+document.addEventListener("touchstart", e => {
+  moveGhost(e.touches[0].clientX, e.touches[0].clientY);
+});
+
+document.addEventListener("touchmove", e => {
+  moveGhost(e.touches[0].clientX, e.touches[0].clientY);
+});
+
+document.addEventListener("click", e => {
+  moveGhost(e.clientX, e.clientY);
+});
+</script>
 
 </body>
 </html>
