@@ -1,79 +1,73 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Pastel Ghost Forest</title>
+<title>Ultimate Magical Pastel Mushroom Forest</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-body {
-  margin: 0;
-  overflow: hidden;
-  background: linear-gradient(#eafff4, #dff6ff);
-  font-family: "Comic Sans MS", cursive;
-}
+body { margin:0; overflow:hidden; background: linear-gradient(#b2f2e0,#ffe0f0); font-family:"Comic Sans MS", cursive; }
 
 /* UI */
-#ui {
-  position: fixed;
-  top: 10px;
-  left: 10px;
-  background: rgba(255,255,255,0.7);
-  padding: 10px 16px;
-  border-radius: 20px;
-  font-size: 14px;
-}
+#ui { position:fixed; top:10px; left:10px; background: rgba(255,255,255,0.7); padding:10px 16px; border-radius:20px; font-size:14px; z-index:100; }
+#score { margin-top:6px; }
 
-#score {
-  margin-top: 6px;
-}
+/* Layers for parallax */
+.layer { position:absolute; width:100%; height:100%; top:0; left:0; pointer-events:none; }
+.foreground { z-index:8; }
+.midground { z-index:5; }
+.background { z-index:2; opacity:0.6; }
 
 /* Ghost */
-#ghost {
-  width: 40px;
-  height: 40px;
-  background: white;
-  border-radius: 50%;
-  position: absolute;
-  left: 50%;
-  top: 60%;
-  transform: translate(-50%, -50%);
-  box-shadow: 0 0 15px rgba(255,255,255,0.9);
-  animation: float 3s ease-in-out infinite;
-  z-index: 10;
-}
+#ghost { width:60px; height:60px; position:absolute; left:50%; top:60%; transform:translate(-50%,-50%); animation: float 3s ease-in-out infinite; z-index:10; }
 
-/* Mushroom */
-.mushroom {
-  width: 30px;
-  height: 30px;
-  background: #ffb3c6;
-  border-radius: 50%;
-  position: absolute;
-  animation: bob 4s ease-in-out infinite;
-}
+/* Mushrooms */
+.mushroom { width:40px; height:40px; position:absolute; animation:bob 4s ease-in-out infinite; z-index:5; }
+.glow { filter: drop-shadow(0 0 8px #ffb6c1); animation: glowPulse 2s infinite alternate; }
 
-/* Snail obstacle */
-#snail {
-  width: 28px;
-  height: 20px;
-  background: #cdb4db;
-  border-radius: 50%;
-  position: absolute;
-  bottom: 40px;
-  left: 20px;
-}
+/* Obstacles / Critters */
+.obstacle { width:35px; height:35px; position:absolute; z-index:10; }
+
+/* Butterflies */
+.butterfly { width:20px; height:20px; position:absolute; animation: butterflyMove 10s linear infinite; }
+
+/* Fireflies */
+.firefly { width:6px; height:6px; background: rgba(255,255,200,0.8); border-radius:50%; position:absolute; animation: fireflyMove 6s linear infinite; }
+
+/* Leaves drifting */
+.leaf { width:12px; height:12px; background: rgba(255,200,150,0.6); border-radius:50%; position:absolute; animation: leafDrift 8s linear infinite; }
+
+/* Floating petals */
+.petal { width:8px; height:8px; background: rgba(255,192,203,0.6); border-radius:50%; position:absolute; animation: petalDrift 7s linear infinite; }
+
+/* Mist / Fog overlay */
+#mist { position:absolute; top:0; left:0; width:100%; height:100%; background: radial-gradient(circle, rgba(255,255,255,0.05), rgba(255,255,255,0)); pointer-events:none; z-index:9; animation: mistMove 20s linear infinite; }
+
+/* River */
+#river { position:absolute; bottom:0; left:0; width:100%; height:120px; background: linear-gradient(to top,#80dfff,#aee8ff); animation: riverFlow 5s linear infinite; z-index:1; }
+
+/* Treasures / Magic Orbs */
+.treasure { width:25px; height:25px; position:absolute; z-index:11; filter: drop-shadow(0 0 10px #fff); animation: treasureGlow 2s infinite alternate; border-radius:50%; }
+
+/* Easter eggs / hidden critters */
+.easter { width:30px; height:30px; position:absolute; z-index:11; animation: critterFloat 4s ease-in-out infinite; }
+
+/* Sparkle */
+.sparkle { width:6px; height:6px; background: rgba(255,255,255,0.8); border-radius:50%; position:absolute; animation: sparkleBurst 0.8s ease-out; }
 
 /* Animations */
-@keyframes float {
-  0%,100% { transform: translate(-50%, -50%) translateY(0); }
-  50% { transform: translate(-50%, -50%) translateY(-8px); }
-}
-
-@keyframes bob {
-  0%,100% { transform: translateY(0); }
-  50% { transform: translateY(-6px); }
-}
+@keyframes float {0%,100%{transform: translate(-50%,-50%) translateY(0);}50%{transform: translate(-50%,-50%) translateY(-10px);}}
+@keyframes bob {0%,100%{transform: translateY(0);}50%{transform: translateY(-6px);}}
+@keyframes glowPulse {0%{filter:drop-shadow(0 0 4px #ffb6c1);}100%{filter:drop-shadow(0 0 12px #ffb6c1);}}
+@keyframes fireflyMove {0%{transform:translate(0,0);}50%{transform:translate(30px,-50px);}100%{transform:translate(-20px,-100px);}}
+@keyframes leafDrift {0%{transform:translate(0,0) rotate(0deg);}50%{transform:translate(40px,60px) rotate(20deg);}100%{transform:translate(-20px,120px) rotate(-15deg);}}
+@keyframes petalDrift {0%{transform:translate(0,0) rotate(0deg);}50%{transform:translate(30px,70px) rotate(15deg);}100%{transform:translate(-20px,140px) rotate(-10deg);}}
+@keyframes mistMove {0%{background-position:0 0;}100%{background-position:100px 100px;}}
+@keyframes riverFlow {0%{background-position:0 0;}100%{background-position:100px 0;}}
+@keyframes butterflyMove {0%{transform:translate(0,0) rotate(0deg);}50%{transform:translate(100px,-50px) rotate(20deg);}100%{transform:translate(-50px,80px) rotate(-15deg);}}
+@keyframes treasureGlow {0%{transform:scale(1);}100%{transform:scale(1.2);}}
+@keyframes sparkleBurst {0%{opacity:1; transform:scale(0);}100%{opacity:0; transform:scale(1.5);}}
+@keyframes critterFloat {0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
 </style>
 </head>
 
@@ -84,58 +78,142 @@ body {
   <div id="score">⭐ Score: 0</div>
 </div>
 
-<div id="ghost"></div>
-<div id="snail"></div>
+<!-- Layers -->
+<div class="layer background"></div>
+<div class="layer midground"></div>
+<div class="layer foreground"></div>
+
+<!-- Ghost -->
+<img id="ghost" src="https://i.imgur.com/9dZp6Xh.png" alt="Chibi Ghost">
 
 <!-- Mushrooms -->
-<div class="mushroom" style="left:20%; top:70%"></div>
-<div class="mushroom" style="left:60%; top:75%"></div>
-<div class="mushroom" style="left:80%; top:65%"></div>
+<img class="mushroom glow" src="https://i.imgur.com/3fL0xLf.png" style="left:10%; top:70%;">
+<img class="mushroom glow" src="https://i.imgur.com/3fL0xLf.png" style="left:40%; top:75%;">
+<img class="mushroom glow" src="https://i.imgur.com/3fL0xLf.png" style="left:70%; top:65%;">
+<img class="mushroom glow" src="https://i.imgur.com/3fL0xLf.png" style="left:85%; top:80%;">
 
-<audio id="music" loop>
-  <source src="https://cdn.pixabay.com/audio/2022/10/16/audio_9b7f87c56c.mp3">
+<!-- Obstacles -->
+<img class="obstacle" id="snail" src="https://i.imgur.com/Q8C3U6a.png" style="left:20%; bottom:50px;">
+<img class="obstacle" id="spider" src="https://i.imgur.com/8gq9Nph.png" style="left:60%; bottom:120px;">
+
+<!-- Butterflies -->
+<div class="butterfly" style="left:10%; top:100px;"></div>
+<div class="butterfly" style="left:50%; top:180px;"></div>
+<div class="butterfly" style="left:80%; top:140px;"></div>
+
+<!-- Fireflies -->
+<div class="firefly" style="left:20%; top:150px;"></div>
+<div class="firefly" style="left:50%; top:200px;"></div>
+<div class="firefly" style="left:80%; top:180px;"></div>
+
+<!-- Leaves -->
+<div class="leaf" style="left:10%; top:0;"></div>
+<div class="leaf" style="left:50%; top:-20px;"></div>
+<div class="leaf" style="left:75%; top:-50px;"></div>
+
+<!-- Petals -->
+<div class="petal" style="left:15%; top:0;"></div>
+<div class="petal" style="left:55%; top:-30px;"></div>
+<div class="petal" style="left:80%; top:-40px;"></div>
+
+<!-- Mist / Fog -->
+<div id="mist"></div>
+
+<!-- River -->
+<div id="river"></div>
+
+<!-- Music & ambient -->
+<audio id="music" loop autoplay>
+  <source src="https://cdn.pixabay.com/audio/2022/10/16/audio_9b7f87c56c.mp3" type="audio/mp3">
 </audio>
 
 <script>
-const ghost = document.getElementById("ghost");
-const snail = document.getElementById("snail");
-const scoreText = document.getElementById("score");
-const music = document.getElementById("music");
+const ghost=document.getElementById("ghost");
+const snail=document.getElementById("snail");
+const spider=document.getElementById("spider");
+const scoreText=document.getElementById("score");
+const music=document.getElementById("music");
+let score=0; music.volume=0.2; music.play();
 
-let score = 0;
-music.volume = 0.3;
-music.play();
-
-function moveGhost(x, y) {
-  ghost.style.left = x + "px";
-  ghost.style.top = y + "px";
-
-  const g = ghost.getBoundingClientRect();
-  const s = snail.getBoundingClientRect();
-
-  if (
-    g.left < s.right &&
-    g.right > s.left &&
-    g.top < s.bottom &&
-    g.bottom > s.top
-  ) {
-    score++;
-    scoreText.innerText = "⭐ Score: " + score;
-    snail.style.left = Math.random() * window.innerWidth + "px";
-  }
+// Treasures
+const treasures=[];
+for(let i=0;i<5;i++){
+  const t=document.createElement("div");
+  t.className="treasure";
+  t.style.left=Math.random()*80+10+"%";
+  t.style.top=Math.random()*60+20+"%";
+  document.body.appendChild(t);
+  treasures.push(t);
 }
 
-document.addEventListener("touchstart", e => {
-  moveGhost(e.touches[0].clientX, e.touches[0].clientY);
-});
+// Easter eggs / hidden critters
+const easters=[];
+function spawnEaster(){
+  const e=document.createElement("img");
+  e.className="easter";
+  e.src="https://i.imgur.com/8RkxJfR.png"; // tiny chibi critter
+  e.style.left=Math.random()*80+10+"%";
+  e.style.top=Math.random()*60+20+"%";
+  document.body.appendChild(e);
+  easters.push(e);
+  setTimeout(()=>{ e.remove(); easters.splice(easters.indexOf(e),1); },5000);
+}
+setInterval(spawnEaster,7000);
 
-document.addEventListener("touchmove", e => {
-  moveGhost(e.touches[0].clientX, e.touches[0].clientY);
-});
+// Sparkle function
+function createSparkle(x,y){
+  const s=document.createElement("div");
+  s.className="sparkle";
+  s.style.left=x+"px";
+  s.style.top=y+"px";
+  document.body.appendChild(s);
+  setTimeout(()=>s.remove(),800);
+}
 
-document.addEventListener("click", e => {
-  moveGhost(e.clientX, e.clientY);
-});
+// Move ghost
+function moveGhost(x,y){
+  ghost.style.left=x+"px";
+  ghost.style.top=y+"px";
+  const g=ghost.getBoundingClientRect();
+  const obstacles=[snail,spider];
+  obstacles.forEach(obs=>{
+    const o=obs.getBoundingClientRect();
+    if(g.left<o.right && g.right>o.left && g.top<o.bottom && g.bottom>o.top){
+      score++;
+      scoreText.innerText="⭐ Score: "+score;
+      obs.style.left=Math.random()*(window.innerWidth-50)+"px";
+      obs.style.top=Math.random()*(window.innerHeight-100)+"px";
+      createSparkle(o.left+20,o.top+20);
+    }
+  });
+  // Treasures
+  treasures.forEach(t=>{
+    const r=t.getBoundingClientRect();
+    if(g.left<r.right && g.right>r.left && g.top<r.bottom && g.bottom>r.top){
+      score+=5;
+      scoreText.innerText="⭐ Score: "+score;
+      createSparkle(r.left+12,r.top+12);
+      t.style.left=Math.random()*80+10+"%";
+      t.style.top=Math.random()*60+20+"%";
+    }
+  });
+  // Easter eggs
+  easters.forEach(e=>{
+    const r=e.getBoundingClientRect();
+    if(g.left<r.right && g.right>r.left && g.top<r.bottom && g.bottom>r.top){
+      score+=3;
+      scoreText.innerText="⭐ Score: "+score;
+      createSparkle(r.left+15,r.top+15);
+      e.remove();
+      easters.splice(easters.indexOf(e),1);
+    }
+  });
+}
+
+// Touch controls
+document.addEventListener("touchstart",e=>moveGhost(e.touches[0].clientX,e.touches[0].clientY));
+document.addEventListener("touchmove",e=>moveGhost(e.touches[0].clientX,e.touches[0].clientY));
+document.addEventListener("click",e=>moveGhost(e.clientX,e.clientY));
 </script>
 
 </body>
