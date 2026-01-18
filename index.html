@@ -3,187 +3,214 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dreamy Mushroom Forest Adventure</title>
+<title>Dreamy Ghost Forest</title>
+
 <style>
-*{margin:0;padding:0;box-sizing:border-box;}
-html,body{height:100%;overflow:hidden;background:#0b1a1e;font-family:sans-serif;}
-#gameCanvas{position:relative;width:100vw;height:100vh;background:url('images/forestBackground.png') repeat-y;background-size:cover;overflow:hidden;touch-action:none;transition:background-color 5s;}
-.ghost{position:absolute;width:80px;height:80px;background:url('images/ghost.png') no-repeat center/contain;z-index:10;transition:transform 0.2s, filter 0.5s;filter:drop-shadow(0 0 12px #a0f0ff);}
-.mushroom,.creature,.flower,.leaf,.particle,.collectible,.obstacle,.web,.fog{position:absolute;background-size:contain;background-repeat:no-repeat;}
-.mushroom{width:60px;height:60px;filter:drop-shadow(0 0 12px #a0f0ff);}
-.flower{width:40px;height:40px;}
-.creature{width:40px;height:40px;transition: transform 0.5s;}
-.leaf{width:20px;height:20px;transition:transform 1s;}
-.particle{width:5px;height:5px;border-radius:50%;background:white;opacity:0.7;pointer-events:none;filter:drop-shadow(0 0 6px white);}
-.collectible{width:30px;height:30px;filter:drop-shadow(0 0 15px #ffffaa);}
-.obstacle{width:40px;height:40px;}
-.web{width:30px;height:30px;opacity:0.3;}
-.fog{width:100px;height:60px;opacity:0.2;background:linear-gradient(180deg,rgba(255,255,255,0.1),rgba(255,255,255,0));border-radius:50%;}
-#scoreBoard{position:absolute;top:10px;left:10px;color:white;font-size:20px;z-index:20;}
-#musicBtn{position:absolute;top:10px;right:10px;padding:8px 12px;background:rgba(255,255,255,0.7);border-radius:8px;display:block;z-index:20;}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif}
+body{overflow:hidden;background:black}
+
+/* SKY */
+#sky{position:fixed;inset:0;transition:background 3s;z-index:-3}
+.sky-day{background:linear-gradient(#b9e6ff,#e8f9ff)}
+.sky-twilight{background:linear-gradient(#ffb3d9,#6c6cff)}
+.sky-night{background:linear-gradient(#050b2e,#1a1a4f)}
+
+/* FOREST */
+#forest{
+  position:absolute;inset:0;z-index:-2;
+  background:
+    radial-gradient(circle at bottom,rgba(0,255,180,.15),transparent),
+    linear-gradient(to top,#0d2f2f,#144b3c);
+  transition:filter 3s
+}
+.day{filter:brightness(1)}
+.twilight{filter:brightness(.85)}
+.night{filter:brightness(.6)}
+
+/* GHOST */
+#ghost{
+  position:absolute;width:72px;height:72px;left:50%;top:55%;
+  transform:translate(-50%,-50%);
+  background:radial-gradient(circle at 50% 35%,#fff 35%,#ffd6ff 36%,#ffd6ff 55%,transparent 56%),
+             radial-gradient(circle at 40% 40%,#000 3%,transparent 4%),
+             radial-gradient(circle at 60% 40%,#000 3%,transparent 4%);
+  border-radius:50% 50% 45% 45%;
+  filter:drop-shadow(0 0 16px #ffd6ff);
+  animation:float 2s ease-in-out infinite alternate
+}
+@keyframes float{from{transform:translate(-50%,-50%) translateY(0)}to{transform:translate(-50%,-50%) translateY(-10px)}}
+
+/* EYES (blink) */
+.blink{
+  background:
+    radial-gradient(circle at 50% 35%,#fff 35%,#ffd6ff 36%,#ffd6ff 55%,transparent 56%),
+    linear-gradient(#000,#000);
+}
+.happy{filter:drop-shadow(0 0 18px #ffccff)}
+.excited{filter:drop-shadow(0 0 26px #ffffff)}
+.sleepy{opacity:.85}
+
+/* WHISPERS */
+#whisper{
+  position:fixed;bottom:90px;width:100%;
+  text-align:center;color:white;opacity:0;
+  font-size:14px;transition:opacity 2s
+}
+
+/* CONTROLS */
+#controls{
+  position:fixed;bottom:18px;width:100%;
+  display:flex;justify-content:center;gap:14px
+}
+.btn{
+  background:rgba(255,255,255,.25);backdrop-filter:blur(10px);
+  border-radius:18px;padding:12px 18px;color:white;
+  font-size:14px;border:none
+}
+
+/* NAME */
+#nameScreen{
+  position:fixed;inset:0;background:rgba(0,0,0,.6);
+  display:flex;align-items:center;justify-content:center;z-index:10
+}
+.nameBox{
+  background:rgba(255,255,255,.2);padding:25px;border-radius:24px;
+  text-align:center;color:white;backdrop-filter:blur(15px)
+}
+input{padding:10px;border-radius:14px;border:none;margin-top:10px}
+
+/* MUSHROOMS */
+.mushroom{
+  position:absolute;width:28px;height:28px;border-radius:50%;
+  background:radial-gradient(circle,#ff9ad5 30%,#ff4fa3 60%,#b3005a 61%);
+  box-shadow:0 0 10px rgba(255,180,230,.8)
+}
+.mushroom.glow{box-shadow:0 0 18px #fff}
+
+/* ENDING */
+#ending{
+  position:fixed;inset:0;background:rgba(255,180,230,.25);
+  display:none;align-items:center;justify-content:center;z-index:20
+}
+.endingBox{
+  background:rgba(255,255,255,.2);padding:30px;border-radius:30px;
+  text-align:center;color:white;backdrop-filter:blur(15px)
+}
+.restart{
+  margin-top:18px;padding:10px 16px;border:none;border-radius:18px;
+  background:rgba(255,255,255,.3);color:white;font-size:14px
+}
 </style>
 </head>
+
 <body>
-<div id="gameCanvas"></div>
-<div class="ghost" id="ghost"></div>
-<div id="scoreBoard">Score: 0</div>
-<button id="musicBtn">Change Music</button>
-<audio id="bgMusic" src="audio/bgMusic.mp3" loop autoplay></audio>
+
+<div id="sky" class="sky-day"></div>
+<div id="forest" class="day"></div>
+
+<div id="ghost" class="happy"></div>
+<div id="whisper"></div>
+
+<div id="controls">
+  <button class="btn" onclick="move(-30,0)">◀</button>
+  <button class="btn" onclick="move(0,-30)">▲</button>
+  <button class="btn" onclick="move(0,30)">▼</button>
+  <button class="btn" onclick="move(30,0)">▶</button>
+</div>
+
+<div id="nameScreen">
+  <div class="nameBox">
+    <h3>Name your ghost 👻</h3>
+    <input id="ghostName" placeholder="Soft name...">
+    <br><br>
+    <button class="btn" onclick="startGame()">Start wandering ✨</button>
+  </div>
+</div>
+
+<div id="ending">
+  <div class="endingBox">
+    <h3>The forest feels warm 🌸</h3>
+    <p id="endText"></p>
+    <button class="restart" onclick="location.reload()">Wander again?</button>
+  </div>
+</div>
 
 <script>
-const canvas=document.getElementById('gameCanvas');
-const ghost=document.getElementById('ghost');
-const bgMusic=document.getElementById('bgMusic');
-const musicBtn=document.getElementById('musicBtn');
-const scoreBoard=document.getElementById('scoreBoard');
+/* STATE */
+const ghost=document.getElementById("ghost");
+const whisper=document.getElementById("whisper");
+const sky=document.getElementById("sky");
+const forest=document.getElementById("forest");
+let name="", started=false;
 
-let ghostPos={x:window.innerWidth/2-40,y:window.innerHeight/2-40};
-let dragging=false;
-let offset={x:0,y:0};
-let score=localStorage.getItem('forestScore')?parseInt(localStorage.getItem('forestScore')):0;
-scoreBoard.innerText='Score: '+score;
-let time=0;
+/* TIME */
+const timeStates=["day","twilight","night"];
+const skyStates=["sky-day","sky-twilight","sky-night"];
+let t=0;
+setInterval(()=>{
+  t=(t+1)%3; forest.className=timeStates[t]; sky.className=skyStates[t];
+},20000);
 
-// Ghost drag
-function startDrag(e){dragging=true;const t=e.touches?e.touches[0]:e;offset.x=t.clientX-ghostPos.x;offset.y=t.clientY-ghostPos.y;}
-function stopDrag(){dragging=false;}
-function moveGhost(e){if(!dragging)return;const t=e.touches?t.touches[0]:e;ghostPos.x=t.clientX-offset.x;ghostPos.y=t.clientY-offset.y;}
-ghost.addEventListener('mousedown',startDrag);
-ghost.addEventListener('touchstart',startDrag);
-window.addEventListener('mouseup',stopDrag);
-window.addEventListener('touchend',stopDrag);
-window.addEventListener('mousemove',moveGhost);
-window.addEventListener('touchmove',moveGhost);
-
-// Element creation
-function createElement(type,imgUrl,count=5,size=50){
-  const arr=[];
-  for(let i=0;i<count;i++){
-    const el=document.createElement('div');el.className=type;el.style.backgroundImage=`url('${imgUrl}')`;
-    el.style.width=size+'px';el.style.height=size+'px';
-    el.style.left=Math.random()*window.innerWidth+'px';el.style.top=Math.random()*window.innerHeight+'px';
-    canvas.appendChild(el);arr.push(el);
-    if(type==='mushroom'){el.addEventListener('touchstart',()=>el.style.transform='scale(1.2)');el.addEventListener('touchend',()=>el.style.transform='scale(1)');}
-    if(type==='creature'){el.addEventListener('touchstart',()=>{el.style.transform='scale(1.3) rotate(10deg)';setTimeout(()=>el.style.transform='scale(1) rotate(0deg)',300);});}
-  }return arr;
+/* MOVE */
+function move(x,y){
+  ghost.style.left=(ghost.offsetLeft+x)+"px";
+  ghost.style.top=(ghost.offsetTop+y)+"px";
+  ghost.className="excited"; playStep();
+  setTimeout(()=>ghost.className="happy",350);
 }
 
-// Elements
-const mushrooms=createElement('mushroom','images/mushroom.png',15,60);
-const flowers=createElement('flower','images/flower.png',10,40);
-const butterflies=createElement('creature','images/butterfly.png',8,40);
-const snails=createElement('obstacle','images/snail.png',4,30);
-const leaves=createElement('leaf','images/leaf.png',8,20);
-const collectibles=[];
+/* BLINK */
+setInterval(()=>{
+  ghost.classList.add("blink");
+  setTimeout(()=>ghost.classList.remove("blink"),120);
+},3500);
+
+/* WHISPERS */
+const whispers=[
+  "The moss hums softly…","Tiny spores glow around you…",
+  "The forest remembers you…","This place feels safe…"
+];
+setInterval(()=>{
+  if(!started) return;
+  whisper.innerText=whispers[Math.floor(Math.random()*whispers.length)];
+  whisper.style.opacity=1; setTimeout(()=>whisper.style.opacity=0,4000);
+},8000);
+
+/* MUSHROOMS */
 for(let i=0;i<10;i++){
-  const c=document.createElement('div');c.className='collectible';
-  c.style.backgroundImage="url('images/firefly.png')";
-  c.style.left=Math.random()*window.innerWidth+'px';
-  c.style.top=Math.random()*window.innerHeight+'px';
-  canvas.appendChild(c);collectibles.push(c);
+  const m=document.createElement("div");
+  m.className="mushroom";
+  m.style.left=Math.random()*innerWidth+"px";
+  m.style.top=(innerHeight*0.6+Math.random()*innerHeight*0.3)+"px";
+  m.onclick=()=>{m.classList.add("glow"); playPlink();
+    setTimeout(()=>m.classList.remove("glow"),600)};
+  document.body.appendChild(m);
 }
 
-// Particles
-let particles=[];
-for(let i=0;i<60;i++){
-  const p=document.createElement('div');p.className='particle';
-  p.style.left=Math.random()*window.innerWidth+'px';
-  p.style.top=Math.random()*window.innerHeight+'px';
-  p.style.opacity=Math.random()*0.6+0.3;
-  canvas.appendChild(p);
-  particles.push({el:p,speed:Math.random()*0.5+0.2,delta:Math.random()*0.05});
+/* AUDIO (Web Audio – gentle) */
+let ctx;
+function audio(){ if(!ctx) ctx=new (window.AudioContext||window.webkitAudioContext)(); return ctx; }
+function tone(freq,dur,vol=0.04){
+  const c=audio(); const o=c.createOscillator(); const g=c.createGain();
+  o.frequency.value=freq; o.type="sine"; g.gain.value=vol;
+  o.connect(g); g.connect(c.destination); o.start();
+  setTimeout(()=>o.stop(),dur);
 }
+function playPlink(){ tone(880,120,0.05) }
+function playStep(){ tone(440,80,0.03) }
 
-// Spider webs
-const webs=[];
-for(let i=0;i<6;i++){
-  const w=document.createElement('div');w.className='web';
-  w.style.backgroundImage="url('images/web.png')";
-  w.style.left=Math.random()*window.innerWidth+'px';
-  w.style.top=Math.random()*window.innerHeight+'px';
-  canvas.appendChild(w);webs.push(w);
+/* START + END */
+function startGame(){
+  name=document.getElementById("ghostName").value||"Little Ghost";
+  document.getElementById("nameScreen").style.display="none";
+  started=true; tone(523,300,0.04);
+  setTimeout(()=>{
+    document.getElementById("ending").style.display="flex";
+    document.getElementById("endText").innerText=
+      name+" curls up near the glowing tree.\n“Let’s rest here for a while…”";
+  },60000);
 }
-
-// Fog / mist
-const fogs=[];
-for(let i=0;i<5;i++){
-  const f=document.createElement('div');f.className='fog';
-  f.style.left=Math.random()*window.innerWidth+'px';
-  f.style.top=Math.random()*window.innerHeight+'px';
-  f.style.width=100+Math.random()*50+'px';
-  f.style.height=50+Math.random()*30+'px';
-  canvas.appendChild(f);fogs.push({el:f,speed:0.05+Math.random()*0.05});
-}
-
-// Collision
-function checkCollision(a,b){
-  const aR=a.getBoundingClientRect();const bR=b.getBoundingClientRect();
-  return !(aR.right<bR.left || aR.left>bR.right || aR.bottom<bR.top || aR.top>bR.bottom);
-}
-
-// Animate loop
-function animate(){
-  time+=1;
-  let bgY=parseFloat(getComputedStyle(canvas).backgroundPositionY)||0;
-  bgY+=0.3;canvas.style.backgroundPositionY=bgY+'px';
-  
-  const colorShift=Math.sin(time/1000)*30;
-  canvas.style.backgroundColor=`rgb(${10+colorShift}, ${26+colorShift}, ${30+colorShift})`;
-
-  ghost.style.top=ghostPos.y+Math.sin(Date.now()/500)/5+'px';
-  ghost.style.left=ghostPos.x+Math.sin(Date.now()/700)/5+'px';
-
-  butterflies.forEach((c,i)=>{
-    let x=parseFloat(c.style.left);x+=0.3+Math.random()*0.2;if(x>window.innerWidth)x=-50;
-    c.style.left=x+'px';c.style.top=parseFloat(c.style.top)+Math.sin(Date.now()/500+i)/2+'px';
-    c.style.transform=`rotate(${Math.sin(Date.now()/500+i)*10}deg)`;
-  });
-
-  snails.forEach(s=>{
-    let x=parseFloat(s.style.left);x+=0.1;if(x>window.innerWidth)x=-40;
-    s.style.left=x+'px';
-    if(checkCollision(ghost,s)){ghostPos.x-=20;ghostPos.y-=20;}
-  });
-
-  leaves.forEach(l=>{
-    let x=parseFloat(l.style.left);let y=parseFloat(l.style.top);
-    x-=(0.2+Math.random()*0.15);y+=Math.sin(Date.now()/400+Math.random())/2;
-    if(y>window.innerHeight)y=-20;if(x<-20)x=window.innerWidth+20;
-    l.style.left=x+'px';l.style.top=y+'px';
-    l.style.transform=`rotate(${Math.sin(Date.now()/300+Math.random())*15}deg)`;
-  });
-
-  particles.forEach(p=>{
-    let y=parseFloat(p.el.style.top);y-=p.speed;p.el.style.top=y+'px';
-    p.el.style.opacity=0.4+Math.abs(Math.sin(Date.now()*p.delta))/2;
-    if(y<0)y=window.innerHeight;p.el.style.top=y+'px';
-  });
-
-  fogs.forEach(f=>{
-    let x=parseFloat(f.el.style.left);
-    x+=f.speed; if(x>window.innerWidth)x=-100;
-    f.el.style.left=x+'px';
-  });
-
-  collectibles.forEach(c=>{
-    if(c.style.display!=='none' && checkCollision(ghost,c)){
-      c.style.display='none';score++;scoreBoard.innerText='Score: '+score;
-      localStorage.setItem('forestScore',score);
-    }
-  });
-
-  mushrooms.forEach((m,i)=>{
-    m.style.transform='scale('+(1+0.05*Math.sin(Date.now()/800+i))+')';
-    m.style.filter=`drop-shadow(0 0 ${10+5*Math.sin(Date.now()/600)}px #a0f0ff)`;
-  });
-
-  requestAnimationFrame(animate);
-}
-animate();
-
-// Admin music
-function adminMusicChange(){const url=prompt("Enter music URL:");if(url)bgMusic.src=url;bgMusic.play();}
-musicBtn.addEventListener('click',adminMusicChange);
 </script>
+
 </body>
 </html>
