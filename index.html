@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF‑8">
+<meta name="viewport" content="width=device‑width, initial‑scale=1.0">
 <title>Dreamy Ghost Forest</title>
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
+*{margin:0;padding:0;box‑sizing:border-box;font-family:'Segoe UI',sans-serif;}
 body{overflow:hidden;background:black;}
 
 /* SKY */
@@ -29,9 +29,9 @@ body{overflow:hidden;background:black;}
 #ghost{
   position:absolute;width:80px;height:80px;
   left:50%;top:55%;transform:translate(-50%,-50%);
-  background:url('images/ghost.png') center/contain no-repeat;
-  filter:drop-shadow(0 0 16px #ffd6ff);
-  animation:float 2s ease-in-out infinite alternate;
+  background:url('https://i.imgur.com/4AiXzf8.png') center/contain no-repeat;
+  filter:drop-shadow(0 0 18px #ffd6ff);
+  animation:float 2s ease‑in‑out infinite alternate;
 }
 @keyframes float{
   from{transform:translate(-50%,-50%) translateY(0);}
@@ -39,8 +39,8 @@ body{overflow:hidden;background:black;}
 }
 
 /* GHOST EXPRESSIONS */
-.happy{filter:drop-shadow(0 0 18px #ffccff);}
-.excited{filter:drop-shadow(0 0 26px #ffffff);}
+.happy{filter:drop-shadow(0 0 20px #ffccff);}
+.excited{filter:drop-shadow(0 0 30px #ffffff);}
 .sleepy{opacity:.85;}
 
 /* WHISPERS */
@@ -75,21 +75,21 @@ input{padding:10px;border-radius:14px;border:none;margin-top:10px;}
 /* MUSHROOMS */
 .mushroom{
   position:absolute;width:60px;height:60px;
-  background:url('images/mushroom.png') center/contain no-repeat;
+  background:url('https://i.imgur.com/3le4VsD.png') center/contain no-repeat;
   transition:0.3s;
 }
-.mushroom.glow{filter:drop-shadow(0 0 18px #fff);}
+.mushroom.glow{filter:drop-shadow(0 0 22px #fff);}
 
 /* FLOWERS */
 .flower{
   position:absolute;width:50px;height:50px;
-  background:url('images/flower.png') center/contain no-repeat;
+  background:url('https://i.imgur.com/jqv0J3H.png') center/contain no-repeat;
 }
 
 /* FIREFLIES */
 .firefly{
   position:absolute;width:30px;height:30px;
-  background:url('images/firefly.png') center/contain no-repeat;
+  background:url('https://i.imgur.com/NpG8Q9R.png') center/contain no-repeat;
 }
 
 /* ENDING */
@@ -162,7 +162,6 @@ function move(x,y){
   ghost.style.left=(ghost.offsetLeft+x)+"px";
   ghost.style.top=(ghost.offsetTop+y)+"px";
   ghost.className="excited";
-  playStep();
   setTimeout(()=>ghost.className="happy",350);
 }
 
@@ -192,7 +191,6 @@ for(let i=0;i<10;i++){
   m.style.top=(innerHeight*0.6+Math.random()*innerHeight*0.3)+"px";
   m.onclick=()=>{
     m.classList.add("glow");
-    playPlink();
     setTimeout(()=>m.classList.remove("glow"),600);
   };
   document.body.appendChild(m);
@@ -216,21 +214,15 @@ for(let i=0;i<8;i++){
   document.body.appendChild(ff);
 }
 
-/* AUDIO */
-let ctx;
-function audio(){ if(!ctx) ctx=new (window.AudioContext||window.webkitAudioContext)(); return ctx; }
-function tone(freq,dur,vol=0.04){const c=audio(); const o=c.createOscillator(); const g=c.createGain(); o.frequency.value=freq; o.type="sine"; g.gain.value=vol; o.connect(g); g.connect(c.destination); o.start(); setTimeout(()=>o.stop(),dur);}
-function playPlink(){ tone(880,120,0.05);}
-function playStep(){ tone(440,80,0.03);}
-
 /* START + END */
 function startGame(){
   name=document.getElementById("ghostName").value||"Little Ghost";
   document.getElementById("nameScreen").style.display="none";
-  started=true; tone(523,300,0.04);
+  started=true;
   setTimeout(()=>{
     document.getElementById("ending").style.display="flex";
-    document.getElementById("endText").innerText=name+" curls up near the glowing tree.\n“Let’s rest here for a while…”";
+    document.getElementById("endText").innerText
+      =name+" curls up near the glowing tree.\n“Let’s rest here for a while…”";
   },60000);
 }
 </script>
