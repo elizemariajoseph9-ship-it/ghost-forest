@@ -1,128 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF‑8">
-<meta name="viewport" content="width=device‑width, initial‑scale=1.0">
-<title>Dreamy Ghost Forest</title>
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dreamy Ghost Forest Adventure</title>
 <style>
-*{margin:0;padding:0;box‑sizing:border-box;font-family:'Segoe UI',sans-serif;}
-body{overflow:hidden;background:black;}
-
-/* SKY */
-#sky{position:fixed;inset:0;transition:background 3s;z-index:-3;}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
+body{overflow:hidden;background:black;touch-action:none;}
+#sky{position:fixed;inset:0;transition:background 3s;z-index:-5;}
 .sky-day{background:linear-gradient(#b9e6ff,#e8f9ff);}
 .sky-twilight{background:linear-gradient(#ffb3d9,#6c6cff);}
 .sky-night{background:linear-gradient(#050b2e,#1a1a4f);}
-
-/* FOREST */
-#forest{
-  position:absolute;inset:0;z-index:-2;
-  background:linear-gradient(to top,#0d2f2f,#144b3c);
-  transition:filter 3s;
-}
+#forest{position:absolute;inset:0;z-index:-4;background:linear-gradient(to top,#0d2f2f,#144b3c);transition:filter 3s;}
 .day{filter:brightness(1);}
 .twilight{filter:brightness(.85);}
 .night{filter:brightness(.6);}
-
-/* GHOST */
-#ghost{
-  position:absolute;width:80px;height:80px;
-  left:50%;top:55%;transform:translate(-50%,-50%);
-  background:url('https://i.imgur.com/4AiXzf8.png') center/contain no-repeat;
-  filter:drop-shadow(0 0 18px #ffd6ff);
-  animation:float 2s ease‑in‑out infinite alternate;
-}
-@keyframes float{
-  from{transform:translate(-50%,-50%) translateY(0);}
-  to{transform:translate(-50%,-50%) translateY(-10px);}
-}
-
-/* GHOST EXPRESSIONS */
+#ghost{position:absolute;width:80px;height:80px;left:50%;top:55%;transform:translate(-50%,-50%);background:url('https://i.imgur.com/Z9z1b8E.png') center/contain no-repeat;filter:drop-shadow(0 0 18px #ffd6ff);animation:float 2s ease-in-out infinite alternate;z-index:5;}
+@keyframes float{from{transform:translate(-50%,-50%) translateY(0);} to{transform:translate(-50%,-50%) translateY(-10px);}}
 .happy{filter:drop-shadow(0 0 20px #ffccff);}
 .excited{filter:drop-shadow(0 0 30px #ffffff);}
 .sleepy{opacity:.85;}
-
-/* WHISPERS */
-#whisper{
-  position:fixed;bottom:90px;width:100%;
-  text-align:center;color:white;opacity:0;
-  font-size:14px;transition:opacity 2s;
-}
-
-/* CONTROLS */
-#controls{
-  position:fixed;bottom:18px;width:100%;
-  display:flex;justify-content:center;gap:14px;
-}
-.btn{
-  background:rgba(255,255,255,.25);backdrop-filter:blur(10px);
-  border-radius:18px;padding:12px 18px;color:white;
-  font-size:14px;border:none;
-}
-
-/* NAME SCREEN */
-#nameScreen{
-  position:fixed;inset:0;background:rgba(0,0,0,.6);
-  display:flex;align-items:center;justify-content:center;z-index:10;
-}
-.nameBox{
-  background:rgba(255,255,255,.2);padding:25px;border-radius:24px;
-  text-align:center;color:white;backdrop-filter:blur(15px);
-}
+#whisper{position:fixed;bottom:90px;width:100%;text-align:center;color:white;opacity:0;font-size:14px;transition:opacity 2s;}
+#controls{position:fixed;bottom:18px;width:100%;display:flex;justify-content:center;gap:14px;z-index:10;}
+.btn{background:rgba(255,255,255,.25);backdrop-filter:blur(10px);border-radius:18px;padding:12px 18px;color:white;font-size:14px;border:none;}
+#nameScreen{position:fixed;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;z-index:20;}
+.nameBox{background:rgba(255,255,255,.2);padding:25px;border-radius:24px;text-align:center;color:white;backdrop-filter:blur(15px);}
 input{padding:10px;border-radius:14px;border:none;margin-top:10px;}
-
-/* MUSHROOMS */
-.mushroom{
-  position:absolute;width:60px;height:60px;
-  background:url('https://i.imgur.com/3le4VsD.png') center/contain no-repeat;
-  transition:0.3s;
-}
-.mushroom.glow{filter:drop-shadow(0 0 22px #fff);}
-
-/* FLOWERS */
-.flower{
-  position:absolute;width:50px;height:50px;
-  background:url('https://i.imgur.com/jqv0J3H.png') center/contain no-repeat;
-}
-
-/* FIREFLIES */
-.firefly{
-  position:absolute;width:30px;height:30px;
-  background:url('https://i.imgur.com/NpG8Q9R.png') center/contain no-repeat;
-}
-
-/* ENDING */
-#ending{
-  position:fixed;inset:0;background:rgba(255,180,230,.25);
-  display:none;align-items:center;justify-content:center;z-index:20;
-}
-.endingBox{
-  background:rgba(255,255,255,.2);padding:30px;border-radius:30px;
-  text-align:center;color:white;backdrop-filter:blur(15px);
-}
-.restart{
-  margin-top:18px;padding:10px 16px;border:none;border-radius:18px;
-  background:rgba(255,255,255,.3);color:white;font-size:14px;
-}
+.mushroom{position:absolute;width:60px;height:60px;background:url('https://i.imgur.com/ocW0E1E.png') center/contain no-repeat;transition:0.3s;cursor:pointer;}
+.mushroom.glow{transform:scale(1.2);filter:drop-shadow(0 0 22px #fff);}
+.flower{position:absolute;width:50px;height:50px;background:url('https://i.imgur.com/lpQtmuO.png') center/contain no-repeat;}
+.butterfly{position:absolute;width:40px;height:40px;background:url('https://i.imgur.com/W4AI9yl.png') center/contain no-repeat;transition:0.5s;}
+.firefly{position:absolute;width:30px;height:30px;background:url('https://i.imgur.com/xthX4DQ.png') center/contain no-repeat;}
+.leaf{position:absolute;width:25px;height:25px;background:url('https://i.imgur.com/5tGhVQY.png') center/contain no-repeat;opacity:0.85;transform:rotate(0deg);}
+.particle{position:absolute;width:5px;height:5px;border-radius:50%;background:white;opacity:0.7;pointer-events:none;filter:drop-shadow(0 0 6px white);}
+#ending{position:fixed;inset:0;background:rgba(255,180,230,.25);display:none;align-items:center;justify-content:center;z-index:30;}
+.endingBox{background:rgba(255,255,255,.2);padding:30px;border-radius:30px;text-align:center;color:white;backdrop-filter:blur(15px);}
+.restart{margin-top:18px;padding:10px 16px;border:none;border-radius:18px;background:rgba(255,255,255,.3);color:white;font-size:14px;}
+#glowTree{position:absolute;width:180px;height:220px;bottom:20px;left:50%;transform:translateX(-50%);background:url('https://i.imgur.com/DWPSsdM.png') center/contain no-repeat;opacity:0;transition:opacity 3s;z-index:25;}
 </style>
 </head>
-
 <body>
-
 <div id="sky" class="sky-day"></div>
 <div id="forest" class="day"></div>
-
 <div id="ghost" class="happy"></div>
 <div id="whisper"></div>
-
 <div id="controls">
   <button class="btn" onclick="move(-30,0)">◀</button>
   <button class="btn" onclick="move(0,-30)">▲</button>
   <button class="btn" onclick="move(0,30)">▼</button>
   <button class="btn" onclick="move(30,0)">▶</button>
 </div>
-
 <div id="nameScreen">
   <div class="nameBox">
     <h3>Name your ghost 👻</h3>
@@ -131,7 +58,6 @@ input{padding:10px;border-radius:14px;border:none;margin-top:10px;}
     <button class="btn" onclick="startGame()">Start wandering ✨</button>
   </div>
 </div>
-
 <div id="ending">
   <div class="endingBox">
     <h3>The forest feels warm 🌸</h3>
@@ -139,12 +65,14 @@ input{padding:10px;border-radius:14px;border:none;margin-top:10px;}
     <button class="restart" onclick="location.reload()">Wander again?</button>
   </div>
 </div>
+<div id="glowTree"></div>
 
 <script>
 const ghost=document.getElementById("ghost");
 const whisper=document.getElementById("whisper");
 const sky=document.getElementById("sky");
 const forest=document.getElementById("forest");
+const glowTree=document.getElementById("glowTree");
 let name="", started=false;
 
 /* TIME OF DAY */
@@ -165,17 +93,21 @@ function move(x,y){
   setTimeout(()=>ghost.className="happy",350);
 }
 
+/* TOUCH / DRAG */
+let dragging=false;
+let offset={x:0,y:0};
+ghost.addEventListener('touchstart', e=>{dragging=true;const touch=e.touches[0];offset.x=touch.clientX-ghost.offsetLeft;offset.y=touch.clientY-ghost.offsetTop;});
+ghost.addEventListener('mousedown', e=>{dragging=true;offset.x=e.clientX-ghost.offsetLeft;offset.y=e.clientY-ghost.offsetTop;});
+window.addEventListener('touchend', ()=>dragging=false);
+window.addEventListener('mouseup', ()=>dragging=false);
+window.addEventListener('touchmove', e=>{if(!dragging)return;const touch=e.touches[0];ghost.style.left=(touch.clientX-offset.x)+"px";ghost.style.top=(touch.clientY-offset.y)+"px";});
+window.addEventListener('mousemove', e=>{if(!dragging)return;ghost.style.left=(e.clientX-offset.x)+"px";ghost.style.top=(e.clientY-offset.y)+"px";});
+
 /* BLINK */
-setInterval(()=>{
-  ghost.classList.add("sleepy");
-  setTimeout(()=>ghost.classList.remove("sleepy"),120);
-},3500);
+setInterval(()=>{ghost.classList.add("sleepy");setTimeout(()=>ghost.classList.remove("sleepy"),120);},3500);
 
 /* WHISPERS */
-const whispers=[
-  "The moss hums softly…","Tiny spores glow around you…",
-  "The forest remembers you…","This place feels safe…"
-];
+const whispers=["The moss hums softly…","Tiny spores glow around you…","The forest remembers you…","This place feels safe…"];
 setInterval(()=>{
   if(!started) return;
   whisper.innerText=whispers[Math.floor(Math.random()*whispers.length)];
@@ -183,16 +115,34 @@ setInterval(()=>{
   setTimeout(()=>whisper.style.opacity=0,4000);
 },8000);
 
+/* PARTICLES */
+let particles=[];
+for(let i=0;i<60;i++){
+  const p=document.createElement("div");p.className="particle";
+  p.style.left=Math.random()*innerWidth+"px";
+  p.style.top=Math.random()*innerHeight+"px";
+  document.body.appendChild(p);
+  particles.push({el:p,speed:Math.random()*0.5+0.2,delta:Math.random()*0.05});
+}
+
+/* LEAVES */
+let leaves=[];
+for(let i=0;i<12;i++){
+  const l=document.createElement("div");
+  l.className="leaf";
+  l.style.left=Math.random()*innerWidth+"px";
+  l.style.top=-Math.random()*innerHeight+"px";
+  document.body.appendChild(l);
+  leaves.push({el:l,speed:0.2+Math.random()*0.3,rot:Math.random()*360});
+}
+
 /* MUSHROOMS */
 for(let i=0;i<10;i++){
   const m=document.createElement("div");
   m.className="mushroom";
   m.style.left=Math.random()*innerWidth+"px";
   m.style.top=(innerHeight*0.6+Math.random()*innerHeight*0.3)+"px";
-  m.onclick=()=>{
-    m.classList.add("glow");
-    setTimeout(()=>m.classList.remove("glow"),600);
-  };
+  m.onclick=()=>{m.classList.add("glow");setTimeout(()=>m.classList.remove("glow"),600);}
   document.body.appendChild(m);
 }
 
@@ -205,14 +155,37 @@ for(let i=0;i<6;i++){
   document.body.appendChild(f);
 }
 
-/* FIREFLIES */
-for(let i=0;i<8;i++){
-  const ff=document.createElement("div");
-  ff.className="firefly";
-  ff.style.left=Math.random()*innerWidth+"px";
-  ff.style.top=Math.random()*innerHeight*0.6+"px";
-  document.body.appendChild(ff);
+/* BUTTERFLIES */
+let butterflies=[];
+for(let i=0;i<6;i++){
+  const b=document.createElement("div");b.className="butterfly";
+  b.style.left=Math.random()*innerWidth+"px";
+  b.style.top=Math.random()*innerHeight*0.5+"px";
+  document.body.appendChild(b);
+  butterflies.push(b);
 }
+
+/* ANIMATE LOOP */
+function animate(){
+  particles.forEach(p=>{
+    let y=parseFloat(p.el.style.top); y-=p.speed; if(y<0)y=innerHeight; p.el.style.top=y+"px";
+    p.el.style.opacity=0.4+Math.abs(Math.sin(Date.now()*p.delta))/2;
+  });
+  butterflies.forEach((b,i)=>{
+    let x=parseFloat(b.style.left); let y=parseFloat(b.style.top);
+    x+=Math.random()*0.5-0.25; y+=Math.sin(Date.now()/500+i)/2;
+    if(x>innerWidth)x=0;if(x<0)x=innerWidth;
+    if(y>innerHeight)y=0;if(y<0)y=innerHeight;
+    b.style.left=x+"px"; b.style.top=y+"px";
+  });
+  leaves.forEach(l=>{
+    let x=parseFloat(l.el.style.left); let y=parseFloat(l.el.style.top);
+    y+=l.speed; l.rot+=1; if(y>innerHeight)y=-30;
+    l.el.style.top=y+"px"; l.el.style.left=x+"px"; l.el.style.transform="rotate("+l.rot+"deg)";
+  });
+  requestAnimationFrame(animate);
+}
+animate();
 
 /* START + END */
 function startGame(){
@@ -220,12 +193,11 @@ function startGame(){
   document.getElementById("nameScreen").style.display="none";
   started=true;
   setTimeout(()=>{
+    glowTree.style.opacity=1;
     document.getElementById("ending").style.display="flex";
-    document.getElementById("endText").innerText
-      =name+" curls up near the glowing tree.\n“Let’s rest here for a while…”";
+    document.getElementById("endText").innerText=name+" curls up near the glowing tree.\n“Let’s rest here for a while…”";
   },60000);
 }
 </script>
-
 </body>
 </html>
