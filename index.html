@@ -23,23 +23,6 @@ overflow:hidden;
 background:radial-gradient(circle at center,#063d36,#021c1a);
 }
 
-/* glowing spores */
-
-.spore{
-position:absolute;
-width:4px;
-height:4px;
-background:white;
-border-radius:50%;
-box-shadow:0 0 8px white;
-animation:float 6s infinite alternate;
-}
-
-@keyframes float{
-from{transform:translateY(0px);}
-to{transform:translateY(-40px);}
-}
-
 /* story text */
 
 #story{
@@ -48,6 +31,7 @@ bottom:120px;
 width:100%;
 text-align:center;
 font-size:20px;
+z-index:20;
 }
 
 /* controls */
@@ -59,6 +43,7 @@ width:100%;
 display:flex;
 justify-content:center;
 gap:20px;
+z-index:20;
 }
 
 button{
@@ -69,7 +54,6 @@ border-radius:12px;
 color:white;
 font-size:18px;
 cursor:pointer;
-backdrop-filter:blur(5px);
 }
 
 /* ghost */
@@ -78,25 +62,19 @@ backdrop-filter:blur(5px);
 position:absolute;
 left:50%;
 top:50%;
-transform:translate(-50%,-50%);
 width:32px;
 height:32px;
-cursor:pointer;
+transform:translate(-50%,-50%);
 z-index:10;
 }
 
-/* ghost body */
-
 .ghost-body{
-position:relative;
 width:100%;
 height:100%;
 background:white;
-border-radius:50% 50% 12% 12%;
-box-shadow:0 0 10px rgba(255,255,255,0.8);
+border-radius:50% 50% 15% 15%;
+box-shadow:0 0 10px white;
 }
-
-/* eyes */
 
 .eye{
 position:absolute;
@@ -106,21 +84,143 @@ background:black;
 top:10px;
 }
 
-.eye.left{ left:9px; }
-.eye.right{ right:9px; }
-
-/* wiggle animation */
+.eye.left{left:9px;}
+.eye.right{right:9px;}
 
 @keyframes wiggle{
-0%{ transform:translate(-50%,-50%) rotate(0deg); }
-25%{ transform:translate(-50%,-52%) rotate(-4deg); }
-50%{ transform:translate(-50%,-50%) rotate(4deg); }
-75%{ transform:translate(-50%,-52%) rotate(-4deg); }
-100%{ transform:translate(-50%,-50%) rotate(0deg); }
+0%{transform:rotate(0deg);}
+25%{transform:rotate(-4deg);}
+50%{transform:rotate(4deg);}
+75%{transform:rotate(-4deg);}
+100%{transform:rotate(0deg);}
 }
 
 .wiggle{
-animation:wiggle 0.6s ease;
+animation:wiggle 0.6s;
+}
+
+/* mushrooms */
+
+.mushroom{
+position:absolute;
+width:12px;
+height:10px;
+background:red;
+border-radius:6px 6px 0 0;
+}
+
+.mushroom::after{
+content:"";
+position:absolute;
+bottom:-6px;
+left:4px;
+width:4px;
+height:6px;
+background:white;
+}
+
+@keyframes wobble{
+0%{transform:rotate(-2deg);}
+50%{transform:rotate(2deg);}
+100%{transform:rotate(-2deg);}
+}
+
+.mushroom{
+animation:wobble 2s infinite;
+}
+
+/* trees */
+
+.tree{
+position:absolute;
+width:12px;
+height:30px;
+}
+
+.tree::before{
+content:"";
+position:absolute;
+bottom:0;
+left:4px;
+width:4px;
+height:12px;
+background:#4a2f1b;
+}
+
+.tree::after{
+content:"";
+position:absolute;
+bottom:10px;
+left:-6px;
+width:24px;
+height:20px;
+background:#0d5c3a;
+border-radius:50%;
+}
+
+/* grass */
+
+.grass{
+position:absolute;
+width:6px;
+height:6px;
+background:#2fa36b;
+}
+
+@keyframes sway{
+0%{transform:rotate(-5deg);}
+50%{transform:rotate(5deg);}
+100%{transform:rotate(-5deg);}
+}
+
+.grass{
+animation:sway 3s infinite;
+}
+
+/* flowers */
+
+.flower{
+position:absolute;
+width:6px;
+height:6px;
+background:pink;
+border-radius:50%;
+animation:sway 3s infinite;
+}
+
+/* fireflies */
+
+.firefly{
+position:absolute;
+width:3px;
+height:3px;
+background:#ffffaa;
+border-radius:50%;
+box-shadow:0 0 6px #ffffaa;
+animation:fly 8s linear infinite;
+}
+
+@keyframes fly{
+0%{transform:translate(0,0);}
+50%{transform:translate(30px,-40px);}
+100%{transform:translate(-20px,30px);}
+}
+
+/* fog */
+
+.fog{
+position:absolute;
+width:120px;
+height:60px;
+background:rgba(255,255,255,0.05);
+border-radius:50%;
+filter:blur(6px);
+animation:drift 25s linear infinite;
+}
+
+@keyframes drift{
+0%{transform:translateX(-200px);}
+100%{transform:translateX(120vw);}
 }
 
 </style>
@@ -131,15 +231,13 @@ animation:wiggle 0.6s ease;
 <div id="scene">
 
 <div id="ghost" onclick="pokeGhost()">
-  <div class="ghost-body">
-    <div class="eye left"></div>
-    <div class="eye right"></div>
-  </div>
+<div class="ghost-body">
+<div class="eye left"></div>
+<div class="eye right"></div>
+</div>
 </div>
 
-<div id="story">
-Tiny spores glow around you...
-</div>
+<div id="story">Tiny spores glow around you...</div>
 
 <div id="controls">
 <button onclick="move('left')">◀</button>
@@ -152,8 +250,6 @@ Tiny spores glow around you...
 
 <script>
 
-/* ask for ghost name */
-
 let ghostName = prompt("Name your tiny ghost 👻")
 
 if(!ghostName || ghostName.trim()===""){
@@ -163,31 +259,28 @@ ghostName="Mochi"
 document.getElementById("story").innerText =
 "You meet a tiny ghost named " + ghostName + "..."
 
+let ghost=document.getElementById("ghost")
 
+let x=window.innerWidth/2
+let y=window.innerHeight/2
 
-/* spores */
+function move(direction){
 
-for(let i=0;i<80;i++){
+let step=20
 
-let spore=document.createElement("div")
-spore.className="spore"
+if(direction==="left") x-=step
+if(direction==="right") x+=step
+if(direction==="up") y-=step
+if(direction==="down") y+=step
 
-spore.style.left=Math.random()*100+"vw"
-spore.style.top=Math.random()*100+"vh"
-
-spore.style.animationDuration=(4+Math.random()*6)+"s"
-
-document.getElementById("scene").appendChild(spore)
+ghost.style.left=x+"px"
+ghost.style.top=y+"px"
 
 }
 
-
-
-/* ghost interaction */
+/* ghost wiggle */
 
 function pokeGhost(){
-
-let ghost=document.getElementById("ghost")
 
 ghost.classList.add("wiggle")
 
@@ -200,31 +293,32 @@ ghostName + " wiggles happily 👻"
 
 }
 
+/* random generator */
 
+function randomItem(className,count){
 
-/* movement */
+for(let i=0;i<count;i++){
 
-function move(direction){
+let el=document.createElement("div")
+el.className=className
 
-let text=document.getElementById("story")
+el.style.left=Math.random()*100+"vw"
+el.style.top=Math.random()*100+"vh"
 
-if(direction==="left"){
-text.innerText=ghostName + " drifts deeper into the whispering forest..."
-}
+document.getElementById("scene").appendChild(el)
 
-if(direction==="right"){
-text.innerText="A pale light flickers between the trees..."
-}
-
-if(direction==="up"){
-text.innerText=ghostName + " floats under glowing spores..."
-}
-
-if(direction==="down"){
-text.innerText="The forest floor hums with strange magic..."
 }
 
 }
+
+/* dense forest */
+
+randomItem("tree",60)
+randomItem("mushroom",80)
+randomItem("grass",120)
+randomItem("flower",60)
+randomItem("firefly",40)
+randomItem("fog",10)
 
 </script>
 
